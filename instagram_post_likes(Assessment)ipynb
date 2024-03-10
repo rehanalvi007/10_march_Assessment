@@ -1,0 +1,487 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "a4d42d4a-f0d2-4f9b-b430-a8da329ea8ac",
+   "metadata": {},
+   "source": [
+    "# iNeuron Assessment"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cf771cef-26ad-4d11-b770-5831d58bb57f",
+   "metadata": {},
+   "source": [
+    "### Machine Learning"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f83e432a-9680-4d2d-8818-a9342322f1d2",
+   "metadata": {},
+   "source": [
+    "Q1.Imagine you have a dataset where you have different Instagram features like u sername , Caption , Hashtag , Followers , Time_Since_posted , and likes , now your task is to predict the number of likes and Time Since posted and the rest of the features are your input features. Now you have to build a model which can predict the number of likes and Time Since posted. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "da937dd7-ddaf-436d-a020-c3ef6b95397c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# import necessary libraries\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns\n",
+    "import warnings\n",
+    "warnings.filterwarnings(\"ignore\")\n",
+    "%matplotlib inline"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "280293e8-bc5c-4c7a-b9a5-15b73ae5f871",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# import csv file\n",
+    "df = pd.read_csv(\"instagram_reach.csv\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1bd002e9-02ee-47b5-b696-bd340b69b798",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "91c4fd77-1ac9-4122-92f5-ddb9c8cfbb35",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Drop unnecessary columns\n",
+    "df.drop(['Unnamed: 0','S.No'],axis=1,inplace=True)\n",
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6079ad48-8c43-4b6b-8cb5-4d0de1689ac2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "54199a27-d1e7-45d6-ad92-0c091d569b2c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Checking Null values\n",
+    "df.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1eca3453-52a6-4507-a7d7-8914aff7630d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = df.dropna()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "38b6ff9d-f48c-4385-8c7a-a74ace00b7d5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# There is no null values\n",
+    "df.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a797a932-a91d-4edd-87ec-73c805239f17",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Check the shape of dataset\n",
+    "df.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6c2a7d30-76b0-4e37-bdad-7e1802c0a21a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Checking duplicate values\n",
+    "df.duplicated().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7d6e2dcc-fe9c-4cd4-a8a3-b488f5735e0d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Describing numerical data columns\n",
+    "df.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ff92d50f-9e50-4f69-9de4-c80e9dd84061",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# checking info of the data\n",
+    "df.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "898aadd2-001e-4dfd-a88a-91939d96ee1b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# drawing histplot for seeing distribution of data\n",
+    "plt.figure(figsize=(10,8))\n",
+    "sns.histplot(data=df, x='Followers', bins=30, kde=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4c6d0805-298f-404b-adb1-9b0325c364f4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# THrough graph it is clear that data is positively skewed"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "39c16408-bc80-4da0-b936-43758ce5cd47",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# we will draw pair plot to see pair wise relationship between variables\n",
+    "sns.pairplot(df)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "292c7d73-fcd9-46c4-9788-8b6b06d75420",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# data contains outliers"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f7d2382b-b42b-4adb-9869-d9621c7eeb14",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Convert the \"Time since posted\" column to a numerical value\n",
+    "df['Time since posted'] = df['Time since posted'].str.replace('hours', '').str.strip().astype(float)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e1571b1e-8b16-4f4c-bdf8-2f85d285bd50",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0b3e879e-d9fa-4660-8d2b-2fc915de4ddc",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#transform categorical variables ('USERNAME', 'Caption', 'Hashtags') into numerical representations by label encoder\n",
+    "from sklearn.preprocessing import LabelEncoder\n",
+    "le=LabelEncoder()\n",
+    "\n",
+    "df['USERNAME']=le.fit_transform(df['USERNAME'])\n",
+    "df['Caption']=le.fit_transform(df['Caption'])\n",
+    "df['Hashtags']=le.fit_transform(df['Hashtags'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "61a14a6f-3c30-451b-a514-b36bfec4d234",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6e84a8e3-82f3-4742-93ce-0342fd464240",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Compute the correlation matrix\n",
+    "corr_matrix = df.corr()\n",
+    "\n",
+    "# Plot the heatmap\n",
+    "plt.figure(figsize=(10, 8))\n",
+    "sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=\".2f\")\n",
+    "plt.title('Correlation Heatmap')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2306db97-4d84-4d71-902b-732d3e765453",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Drop the 'Likes' and 'Time since posted' columns from the DataFrame 'df' \n",
+    "# and store the remaining columns in the variable 'X'\n",
+    "X = df.drop(columns=['Likes', 'Time since posted'])\n",
+    "y = df[['Likes', 'Time since posted']]\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3ee5823c-98e9-4b12-a4ae-f0028240bf00",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "752b8ea1-6a21-4991-8218-06e90ca288f8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "25d8684f-674e-480b-b752-360d14ca5ba4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "### Do train test split\n",
+    "from sklearn.model_selection import train_test_split"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "af1f0798-0b19-4eb0-a0ef-1a3d025dca3d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.model_selection import train_test_split\n",
+    "X_train,X_test,y_train,y_test=train_test_split(X,y, test_size=0.20,random_state=42)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "04a6b318-3322-4210-8cb9-6ee40625e5ac",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.preprocessing import StandardScaler\n",
+    "scaler=StandardScaler()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e8ba41d1-5197-45b6-88ca-a817e59baf6d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X_train_scaled=scaler.fit_transform(X_train)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e91c88d4-59e7-4b33-b06d-06fd1a35ba7b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X_test_scaled=scaler.transform(X_test)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6a98d5e8-3c61-4857-970b-e71a418ea77d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Model building\n",
+    "from sklearn.linear_model import LinearRegression,Ridge,Lasso,ElasticNet\n",
+    "from sklearn.ensemble import RandomForestRegressor\n",
+    "from sklearn.tree import DecisionTreeRegressor\n",
+    "from sklearn.metrics import r2_score,mean_absolute_error, mean_squared_error"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6b8a0826-3884-4922-9476-188b042bf272",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def evaluate_model(true, predict):\n",
+    "    r2=r2_score(true, predict)\n",
+    "    mae=mean_absolute_error(true,predict)\n",
+    "    mse=mean_squared_error(true,predict)\n",
+    "   \n",
+    "\n",
+    "    return r2, mae,mse,"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "890a2174-a7a2-42d2-a80f-d75aa391dcc8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "models={\n",
+    "\n",
+    "    'LinearRegression':LinearRegression(),\n",
+    "    'Lasso':Lasso(),\n",
+    "    'Ridge':Ridge(),\n",
+    "    'Elasticnet':ElasticNet(),\n",
+    "    'Randomforest':RandomForestRegressor()\n",
+    "\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "06093b61-83ef-4556-ab26-168858e744bf",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(len(models)):\n",
+    "    model=list((models.values()))[i]\n",
+    "    print(model)\n",
+    "    \n",
+    "    \n",
+    "r2_list=[]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "958b18e3-3025-4290-8d2c-ad7d411bd6df",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(len(models)):\n",
+    "    model=list(models.values())[i]\n",
+    "    \n",
+    "    model.fit(X_train,y_train)\n",
+    "\n",
+    "    #make_prediction\n",
+    "    y_pred=model.predict(X_test)\n",
+    "\n",
+    "    #this is for the validaiton\n",
+    "    R2,MAE,MSE=evaluate_model(y_test,y_pred)\n",
+    "\n",
+    "\n",
+    "    print(\"model training performance\",model)\n",
+    "    print(\"MSE:\", MSE)\n",
+    "    print(\"MAE:\",MAE)\n",
+    "    print(\"R2 SCORE:\",R2)\n",
+    "    \n",
+    "    r2_list.append(R2)\n",
+    "\n",
+    "    print(\"=\"*40)\n",
+    "    print(\"\\n\")\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c5f30705-95e8-4b41-9e28-0bdfa145bd50",
+   "metadata": {},
+   "source": [
+    "Among these models, the Random Forest Regressor has the lowest MSE and MAE, and the highest R2 score. Therefore, based on these metrics, the Random Forest Regressor appears to be the best-performing model for this dataset. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "61ed3229-df70-455c-8f2c-b7b9d9dbfbf6",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.8"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
